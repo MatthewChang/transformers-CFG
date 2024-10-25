@@ -136,7 +136,6 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
     def update_state_with_batch_token_seqs(
         self, input_ids, batch_parsing_states, valid_token_start_idx=None
     ):
-
         if self.last_size is None:
             valid_prefix_tokens = [
                 (
@@ -175,6 +174,7 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
             # Maybe we should just trust the user to provide valid input_ids?
             # The conclusion is that, we assume the input_ids are valid, and our generation will be correct.
             # If the input_ids are not valid, then the generation result will be wrong and we don't take responsibility for that.
+            import pdb; pdb.set_trace()
             raise RuntimeError(
                 "Input ID's length is inconsistent with the current state of "
                 "the GrammarConstrainedLogitsProcessor. If you want to process "

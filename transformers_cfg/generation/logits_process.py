@@ -66,6 +66,14 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         :param scores:
         :return:
         """
+        if isinstance(input_ids, tuple):
+            import pdb; pdb.set_trace()
+        if len(input_ids.shape) == 1:
+            input_ids = input_ids.unsqueeze(0)
+        if len(scores.shape) == 1:
+            scores = scores.unsqueeze(0)
+
+
         if device is None:
             device = scores.device
         # we dynamically create stacks at the first call, so that we know the batch size and beam size
@@ -91,7 +99,6 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
             )
         )
         # logger.debug("stacks: \n" + pprint.pformat(self.batch_parsing_states.stacks))
-
         self.batch_parsing_states = (
             self.grammar_constraint.update_state_with_batch_token_seqs(
                 input_ids, self.batch_parsing_states, self.valid_token_start_idx
@@ -108,3 +115,11 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         self, input_ids: torch.LongTensor, scores: torch.FloatTensor
     ) -> torch.FloatTensor:
         return self.process_logits(input_ids, scores)
+
+class GrammarConstrainedLogitsProcessorVLLM(GrammarConstrainedLogitsProcessor):
+    def __call__(
+        self, prompt_ids, past_ids, scores: torch.FloatTensor
+    ) -> torch.FloatTensor:
+        all_ids = torch.cat([torch.tensor(prompt_ids), torch.tensor(past_ids)]).int()
+        return super().__call__(all_ids, scores)
+
