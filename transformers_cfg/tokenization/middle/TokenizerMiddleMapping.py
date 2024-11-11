@@ -44,7 +44,7 @@ class TokenizerMiddleMapping:
             return T5TokenizerMiddleMapping(hf_tokenizer)
         elif isinstance(
             hf_tokenizer, PreTrainedTokenizerFast
-        ) and 'Meta-Llama-3' in hf_tokenizer.name_or_path:
+        ) and 'Llama-3' in hf_tokenizer.name_or_path:
             return GPT2TokenizerMiddleMapping(hf_tokenizer)
 
     @staticmethod
